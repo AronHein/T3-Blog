@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { VscThreeBars } from "react-icons/vsc";
 import { GoBell } from "react-icons/go";
 import { FaRegEdit } from "react-icons/fa";
 import { signIn, useSession, signOut } from "next-auth/react";
 import { IoMdLogOut } from "react-icons/io";
+import { GlobalContext } from "../../contexts/GlobalContexProvider/Index";
 
 const MainLayout = ({ children }: React.PropsWithChildren) => {
   const { data: sessionData, status } = useSession();
+  const { isWriteModalOpen, setIsWriteModalOpen } = useContext(GlobalContext);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -23,7 +25,10 @@ const MainLayout = ({ children }: React.PropsWithChildren) => {
             </div>
             <div className="h-5 w-5 rounded-full bg-gray-600"></div>
             <div>
-              <button className="flex  items-center space-x-3 rounded border border-gray-200 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900">
+              <button
+                onClick={() => setIsWriteModalOpen(true)}
+                className="flex  items-center space-x-3 rounded border border-gray-200 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900"
+              >
                 <div>Write</div>
                 <div>
                   <FaRegEdit />

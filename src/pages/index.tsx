@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { GoChevronDown } from "react-icons/go";
 import MainLayout from "../layouts/MainLayout";
+import WriteFormModal from "../components/WriteFormModal/Index";
 
 const HomePage = () => {
   return (
@@ -155,6 +156,7 @@ const HomePage = () => {
           </div>
         </aside>
       </section>
+      <WriteFormModal />
     </MainLayout>
   );
 };
