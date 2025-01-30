@@ -4,18 +4,18 @@ import { GlobalContext } from "../../contexts/GlobalContexProvider/Index";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { title } from "process";
+import { trpc } from "../../utils/trpc";
 
 type WriteFormType = {
   title: string;
   description: string;
-  body: string;
+  text: string;
 };
 
-const WriteFormSchema = z.object({
+export const WriteFormSchema = z.object({
   title: z.string().min(2),
   description: z.string().min(2),
-  body: z.string().min(20),
+  text: z.string().min(20),
 });
 
 const WriteFormModal = () => {
@@ -28,7 +28,16 @@ const WriteFormModal = () => {
     resolver: zodResolver(WriteFormSchema),
   });
 
-  const onSubmit = (data: WriteFormType) => console.log(data);
+  const createPost = trpc.post.createPost.useMutation({
+    onSuccess: () => {
+      console.log("Post created succesfully");
+    },
+  });
+
+  const onSubmit = (data: WriteFormType) => {
+    createPost.mutate(data);
+  };
+
   return (
     <Modal isOpen={isWriteModalOpen} onClose={() => setIsWriteModalOpen(false)}>
       <form
@@ -61,10 +70,10 @@ const WriteFormModal = () => {
           rows={10}
           className="h-full w-full rounded-xl border border-gray-300 p-4 outline-none focus:border-gray-600"
           placeholder="Main body of the blog"
-          {...register("body")}
+          {...register("text")}
         ></textarea>
         <p className="w-full pb-2 text-left text-sm text-red-500">
-          {errors.body?.message}
+          {errors.text?.message}
         </p>
         <div className="flex w-full justify-end">
           <button
