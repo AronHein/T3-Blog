@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { trpc } from "../../utils/trpc";
+import toast from "react-hot-toast";
 
 type WriteFormType = {
   title: string;
@@ -23,14 +24,20 @@ const WriteFormModal = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<WriteFormType>({
     resolver: zodResolver(WriteFormSchema),
   });
 
+  const postRoute = trpc.useUtils().post;
+
   const createPost = trpc.post.createPost.useMutation({
     onSuccess: () => {
-      console.log("Post created succesfully");
+      toast.success("Post created succesfully!");
+      setIsWriteModalOpen(false);
+      reset();
+      postRoute.invalidate();
     },
   });
 

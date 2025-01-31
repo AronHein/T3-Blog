@@ -5,6 +5,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { signIn, useSession, signOut } from "next-auth/react";
 import { IoMdLogOut } from "react-icons/io";
 import { GlobalContext } from "../../contexts/GlobalContexProvider/Index";
+import Link from "next/link";
 
 const Header = () => {
   const { status } = useSession();
@@ -14,7 +15,9 @@ const Header = () => {
       <div className="text-2xl text-gray-600">
         <VscThreeBars />
       </div>
-      <div className="text-xl font-thin">Blog</div>
+      <Link href={"/"} className="select-none text-xl font-thin">
+        Blog
+      </Link>
       {status === "authenticated" ? (
         <div className="flex items-center space-x-4">
           <div>
