@@ -1,11 +1,9 @@
 import {
-  Button,
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { useState } from "react";
 
 type ModalProps = {
   isOpen: boolean;

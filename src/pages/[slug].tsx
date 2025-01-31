@@ -5,6 +5,7 @@ import { trpc } from "../utils/trpc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { FaRegComment } from "react-icons/fa";
+import CommentSidebar from "../components/CommentSidebar";
 
 const PostPage = () => {
   const router = useRouter();
@@ -31,8 +32,17 @@ const PostPage = () => {
 
   const postRoute = trpc.useUtils().post;
 
+  const [showCommentSidebar, setShowCommentSidebar] = useState(false);
+
   return (
     <MainLayout>
+      {post.data?.id && (
+        <CommentSidebar
+          showCommentSidebar={showCommentSidebar}
+          setShowCommentSidebar={setShowCommentSidebar}
+          postId={post.data?.id}
+        />
+      )}
       {post.isLoading && (
         <div className="flex h-full w-full items-center justify-center">
           <div>Loading...</div>
@@ -68,7 +78,12 @@ const PostPage = () => {
               )}
             </div>
             <div>
-              <FaRegComment className="text-xl" />
+              <FaRegComment
+                className="cursor-pointer text-xl"
+                onClick={() => {
+                  setShowCommentSidebar(true);
+                }}
+              />
             </div>
           </div>
         </div>

@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import MainLayout from "../layouts/MainLayout";
 import WriteFormModal from "../components/WriteFormModal/Index";
 import MainSection from "../components/MainSection/Index";
-import SideSection from "../components/SideSection/Index";
 
 const HomePage = () => {
   return (

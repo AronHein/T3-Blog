@@ -2,7 +2,6 @@ import React from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { postcss } from "tailwindcss";
 import { IoIosSearch } from "react-icons/io";
 import { GoChevronDown } from "react-icons/go";
 import { trpc } from "../../utils/trpc";

@@ -2,7 +2,7 @@ import slugify from "slugify";
 import { WriteFormSchema } from "../../../components/WriteFormModal/Index";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import {  z } from "zod";
 
 export const postRouter = router({
     createPost: protectedProcedure
@@ -103,6 +103,48 @@ export const postRouter = router({
                 }
             })
 
+        }),
+    
+    postComment: protectedProcedure
+        .input(z.object({
+            text: z.string().min(1),
+            postId: z.string(),
+          }))
+        .mutation(async ({ctx:{prisma, session}, input}) => {
+            await prisma.comment.create({
+                data: {
+                    text: input.text,
+                    postId: input.postId,
+                    userId: session.user.id
+                }
+            })
+        }),
+
+        getComments: publicProcedure.input(z.object({
+            postId: z.string()
+        }))
+            .query(async ({ctx:{prisma}, input}) => {
+            const comments = await prisma.comment.findMany({
+                where: {
+                    postId: input.postId
+                },
+                orderBy: {
+                    createdAt: "desc"
+                },
+                select:{
+                    id:true,
+                    text:true,
+                    createdAt: true,
+                    user: {
+                        select: {
+                            name:true,
+                            image:true
+                        }
+                    }
+                }
+            })
+    
+            return comments
         }),
 
 })
