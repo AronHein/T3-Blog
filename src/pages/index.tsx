@@ -9,7 +9,6 @@ const HomePage = () => {
     <MainLayout>
       <section className="grid grid-cols-12">
         <MainSection />
-        <SideSection />
       </section>
       <WriteFormModal />
     </MainLayout>

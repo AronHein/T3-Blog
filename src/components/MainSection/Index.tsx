@@ -12,7 +12,7 @@ function MainSection() {
   const getPosts = trpc.post.getPosts.useQuery();
 
   return (
-    <main className="col-span-8 h-full w-full border-r border-gray-300 px-24">
+    <main className="col-span-12 h-full w-full border-r border-gray-300 px-24">
       <div className="flex w-full flex-col space-y-4 py-10">
         <div className="flex w-full items-center space-x-4">
           <label
