@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import MainLayout from "../layouts/MainLayout";
 import { trpc } from "../utils/trpc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { FcLike, FcLikePlaceholder } from "react-icons/fc";
+import { FaRegComment } from "react-icons/fa";
 
 const PostPage = () => {
   const router = useRouter();
@@ -16,6 +18,19 @@ const PostPage = () => {
     }
   );
 
+  const likePost = trpc.post.likePost.useMutation({
+    onSuccess: () => {
+      postRoute.invalidate();
+    },
+  });
+  const dislikePost = trpc.post.dislikePost.useMutation({
+    onSuccess: () => {
+      postRoute.invalidate();
+    },
+  });
+
+  const postRoute = trpc.useUtils().post;
+
   return (
     <MainLayout>
       {post.isLoading && (
@@ -23,6 +38,38 @@ const PostPage = () => {
           <div>Loading...</div>
           <div>
             <AiOutlineLoading3Quarters className="animate-spin" />
+          </div>
+        </div>
+      )}
+      {post.isSuccess && (
+        <div className="fixed bottom-10 flex w-full items-center justify-center">
+          <div className="group flex items-center justify-center space-x-4 rounded-full border border-gray-400 bg-white px-6 py-4 hover:border-gray-900">
+            <div className="border-r border-gray-400 pr-4 group-hover:border-gray-900">
+              {post.data?.likes && post.data.likes.length > 0 ? (
+                <FcLike
+                  onClick={() =>
+                    post.data?.id &&
+                    dislikePost.mutate({
+                      postId: post.data.id,
+                    })
+                  }
+                  className="cursor-pointer text-2xl"
+                />
+              ) : (
+                <FcLikePlaceholder
+                  onClick={() =>
+                    post.data?.id &&
+                    likePost.mutate({
+                      postId: post.data.id,
+                    })
+                  }
+                  className="cursor-pointer text-2xl"
+                />
+              )}
+            </div>
+            <div>
+              <FaRegComment className="text-xl" />
+            </div>
           </div>
         </div>
       )}
