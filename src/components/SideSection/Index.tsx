@@ -1,6 +1,11 @@
 import React from "react";
+import { trpc } from "../../utils/trpc";
+import dayjs from "dayjs";
+import Link from "next/link";
 
 function SideSection() {
+  const getReadingList = trpc.post.getReadingList.useQuery();
+
   return (
     <aside className="sticky top-20 col-span-4 flex h-full w-full flex-col space-y-4 p-6">
       <div>
@@ -29,25 +34,29 @@ function SideSection() {
       <div className="sticky top-20">
         <h3 className="my-6 text-lg font-semibold">Your reading list</h3>
         <div className="flex flex-col space-y-8">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="group flex items-center space-x-6">
-              <div className="aspect-square h-full w-2/5 rounded-xl bg-gray-300"></div>
-              <div className="flex w-full flex-col space-y-2">
-                <div className="text-lg font-semibold decoration-indigo-600 group-hover:underline">
-                  Lorem ipsum dolor sit amet consectetur.
+          {getReadingList.data &&
+            getReadingList.data.map((bookmark) => (
+              <Link
+                href={`/${bookmark.post.slug}`}
+                key={bookmark.id}
+                className="group flex items-center space-x-6"
+              >
+                <div className="aspect-square h-full w-2/5 rounded-xl bg-gray-300"></div>
+                <div className="flex w-full flex-col space-y-2">
+                  <div className="text-lg font-semibold decoration-indigo-600 group-hover:underline">
+                    {bookmark.post.title}
+                  </div>
+                  <div className="">{bookmark.post.description}</div>
+                  <div className="flex w-full items-center space-x-4">
+                    <div className="h-8 w-8 rounded-full bg-gray-300"></div>
+                    <div>{bookmark.post.author.name} &#x2022;</div>
+                    <div>
+                      {dayjs(bookmark.post.createdAt).format("DD/MM/YYYY")}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Asperiores voluptates incidunt laborum quis odit.
-                </div>
-                <div className="flex w-full items-center space-x-4">
-                  <div className="h-8 w-8 rounded-full bg-gray-300"></div>
-                  <div>Firstname Lastname &#x2022;</div>
-                  <div>29 Jan. 2025</div>
-                </div>
-              </div>
-            </div>
-          ))}
+              </Link>
+            ))}
         </div>
       </div>
     </aside>

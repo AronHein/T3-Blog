@@ -33,18 +33,28 @@ export const postRouter = router({
             })
         }),
 
-    getPosts: publicProcedure.query(async ({ctx:{prisma}}) => {
+    getPosts: publicProcedure.query(async ({ctx:{prisma, session}}) => {
         const posts = prisma.post.findMany({
             orderBy: {
                 createdAt: "desc"
             },
-            include:{
-                author:{
-                    select:{
-                        name:true,
-                        image:true
+            select: {
+                id:true,
+                description:true,
+                title: true,
+                slug: true,
+                createdAt: true,
+                author: {
+                    select: {
+                        name: true,
+                        image: true
                     }
-                }
+                },
+                bookmarks: session?.user?.id ?{
+                    where: {
+                        userId: session?.user?.id
+                    }
+                }: false
             }
         })
 
@@ -146,5 +156,66 @@ export const postRouter = router({
     
             return comments
         }),
+
+        bookmarkPost: protectedProcedure.input(z.object({
+            postId: z.string()
+            }))
+            .mutation(async ({ctx:{prisma, session}, input:{postId}}) => {
+    
+                await prisma.bookmark.create({
+                    data:{
+                        userId: session.user.id,
+                        postId
+                    }
+                })
+    
+            }),
+
+        removeBookmark: protectedProcedure.input(z.object({
+            postId: z.string()
+            }))
+            .mutation(async ({ctx:{prisma, session}, input:{postId}}) => {
+    
+                await prisma.bookmark.delete({
+                    where:{
+                        userId_postId: {
+                            postId: postId,
+                            userId: session.user.id
+                        }
+                    }
+                })
+    
+            }),
+
+        getReadingList: protectedProcedure
+            .query(async ({ctx:{prisma, session}}) => {
+                const readingList = await prisma.bookmark.findMany({
+                    where: {
+                        userId: session.user.id
+                    },
+                    take: 4,
+                    orderBy: {
+                        createdAt: "desc"
+                    },
+                    select: {
+                        id: true,
+                        post: {
+                            select: {
+                                title:true,
+                                description: true,
+                                createdAt: true,
+                                slug: true,
+                                author: {
+                                    select: {
+                                        name: true,
+                                        image: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                return readingList
+            })
 
 })
