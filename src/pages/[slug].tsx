@@ -6,8 +6,15 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { FaRegComment } from "react-icons/fa";
 import CommentSidebar from "../components/CommentSidebar";
+import { RiImageAddFill } from "react-icons/ri";
+
+import UnsplashGallary from "../components/UnsplashGallary/Index";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 const PostPage = () => {
+  const { data } = useSession();
+  const [isUnsplashModelOpen, setIsUnsplashModelOpen] = useState(false);
   const router = useRouter();
 
   const post = trpc.post.getPost.useQuery(
@@ -36,6 +43,15 @@ const PostPage = () => {
 
   return (
     <MainLayout>
+      {post.isSuccess && post.data && (
+        <UnsplashGallary
+          isUnsplashModelOpen={isUnsplashModelOpen}
+          setIsUnsplashModelOpen={setIsUnsplashModelOpen}
+          postId={post.data?.id}
+          slug={post.data.slug}
+        />
+      )}
+
       {post.data?.id && (
         <CommentSidebar
           showCommentSidebar={showCommentSidebar}
@@ -91,6 +107,22 @@ const PostPage = () => {
       <div className="flex h-full w-full  flex-col items-center justify-center p-10">
         <div className="flex w-full max-w-screen-lg flex-col space-y-6">
           <div className="relative h-[60vh] rounded-xl bg-gray-300 shadow-lg">
+            {post.isSuccess && post.data?.featuredImage && (
+              <Image
+                src={post.data.featuredImage}
+                alt={post.data.title}
+                fill
+                className="rounded-xl"
+              />
+            )}
+            {data?.user?.id === post.data?.authorId && (
+              <div
+                onClick={() => setIsUnsplashModelOpen(true)}
+                className="absolute left-2 top-2 z-10 cursor-pointer rounded-lg bg-black/25 p-2 text-white hover:bg-black/80"
+              >
+                <RiImageAddFill className="text-3xl" />
+              </div>
+            )}
             <div className="absolute flex h-full w-full items-center justify-center">
               <div className="rounded-xl bg-black p-4 text-3xl text-white opacity-50">
                 {post.data?.title}

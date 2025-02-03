@@ -4,11 +4,18 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoIosSearch } from "react-icons/io";
 import { GoChevronDown } from "react-icons/go";
 import { trpc } from "../../utils/trpc";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import Post from "../Post/Index";
+import { LoaderIcon } from "react-hot-toast";
 
 function MainSection() {
-  const getPosts = trpc.post.getPosts.useQuery();
+  const getPosts = trpc.post.getPosts.useInfiniteQuery(
+    {},
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
 
   return (
     <main className="col-span-8 h-full w-full border-r border-gray-300 px-24">
@@ -61,8 +68,28 @@ function MainSection() {
             </div>
           </div>
         )}
-        {getPosts.isSuccess &&
-          getPosts.data.map((post) => <Post {...post} key={post.id} />)}
+        <InfiniteScroll
+          dataLength={
+            getPosts.data?.pages.flatMap((page) => page.posts).length ?? 0
+          }
+          next={getPosts.fetchNextPage}
+          hasMore={!!getPosts.hasNextPage}
+          loader={
+            <div className="flex h-full w-full items-center justify-center">
+              <LoaderIcon />
+            </div>
+          }
+          endMessage={
+            <p className="text-center">
+              <b>This is all the posts!</b>
+            </p>
+          }
+        >
+          {getPosts.isSuccess &&
+            getPosts.data?.pages
+              .flatMap((page) => page.posts)
+              .map((post) => <Post {...post} key={post.id} />)}
+        </InfiniteScroll>
       </div>
     </main>
   );

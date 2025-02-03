@@ -4,6 +4,8 @@ import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import {  z } from "zod";
 
+const LIMIT = 10
+
 export const postRouter = router({
     createPost: protectedProcedure
         .input(WriteFormSchema)
@@ -33,8 +35,13 @@ export const postRouter = router({
             })
         }),
 
-    getPosts: publicProcedure.query(async ({ctx:{prisma, session}}) => {
-        const posts = prisma.post.findMany({
+    getPosts: publicProcedure.input(
+        z.object({
+            cursor: z.string().nullish()
+        })
+    )
+    .query(async ({ctx:{prisma, session}, input:{cursor}}) => {
+        const posts = await prisma.post.findMany({
             orderBy: {
                 createdAt: "desc"
             },
@@ -44,6 +51,7 @@ export const postRouter = router({
                 title: true,
                 slug: true,
                 createdAt: true,
+                featuredImage: true,
                 author: {
                     select: {
                         name: true,
@@ -55,10 +63,21 @@ export const postRouter = router({
                         userId: session?.user?.id
                     }
                 }: false
-            }
+            },
+            cursor: cursor ? {id:cursor} : undefined,
+            take: LIMIT + 1,
         })
 
-        return posts
+        let nextCursor: typeof cursor | undefined = undefined
+        
+        if (posts.length > LIMIT) {
+            const nextItem = posts.pop()
+            if (nextItem) {
+                nextCursor = nextItem.id
+            }
+        }
+
+        return {posts, nextCursor}
     }),
 
     getPost: publicProcedure.input(z.object({
@@ -74,6 +93,9 @@ export const postRouter = router({
                 id:true,
                 text: true,
                 title: true,
+                authorId: true,
+                slug: true,
+                featuredImage: true,
                 likes:session?.user?.id ?{
                     where: {
                         userId: session?.user?.id
@@ -205,6 +227,7 @@ export const postRouter = router({
                                 description: true,
                                 createdAt: true,
                                 slug: true,
+                                featuredImage:true,
                                 author: {
                                     select: {
                                         name: true,
@@ -216,6 +239,31 @@ export const postRouter = router({
                     }
                 })
                 return readingList
+            }),
+
+        updatePostFeaturedImage: protectedProcedure
+            .input(z.object({
+                imageUrl: z.string().url(),
+                postId: z.string()
+            }))
+            .mutation(async ({ctx, input}) => {
+                const postData = await ctx.prisma.post.findUnique({
+                    where: {
+                        id: input.postId
+                    }
+                })
+                if (postData?.authorId !== ctx.session.user.id) {
+                    throw new TRPCError({code: "FORBIDDEN", message: "update forbidden, you are not the owner of the post"})
+                }
+
+                await ctx.prisma.post.update({
+                    where: {
+                        id: input.postId
+                    },
+                    data:{
+                        featuredImage: input.imageUrl
+                    }
+                })
             })
 
 })

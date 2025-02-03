@@ -6,9 +6,10 @@ import { signIn, useSession, signOut } from "next-auth/react";
 import { IoMdLogOut } from "react-icons/io";
 import { GlobalContext } from "../../contexts/GlobalContexProvider/Index";
 import Link from "next/link";
+import Avatar from "../Avatar";
 
 const Header = () => {
-  const { status } = useSession();
+  const { status, data } = useSession();
   const { setIsWriteModalOpen } = useContext(GlobalContext);
   return (
     <header className="flex h-20 w-full flex-row items-center justify-around border-b border-gray-200 bg-white">
@@ -23,7 +24,9 @@ const Header = () => {
           <div>
             <GoBell className="text-2xl text-gray-600" />
           </div>
-          <div className="h-5 w-5 rounded-full bg-gray-600"></div>
+          <div className="relative h-7 w-7 rounded-full bg-gray-600">
+            {data.user?.image && <Avatar img={data.user?.image} />}
+          </div>
           <div>
             <button
               onClick={() => setIsWriteModalOpen(true)}

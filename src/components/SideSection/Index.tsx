@@ -2,6 +2,8 @@ import React from "react";
 import { trpc } from "../../utils/trpc";
 import dayjs from "dayjs";
 import Link from "next/link";
+import Avatar from "../Avatar";
+import Image from "next/image";
 
 function SideSection() {
   const getReadingList = trpc.post.getReadingList.useQuery();
@@ -41,14 +43,27 @@ function SideSection() {
                 key={bookmark.id}
                 className="group flex items-center space-x-6"
               >
-                <div className="aspect-square h-full w-2/5 rounded-xl bg-gray-300"></div>
+                <div className="relative aspect-square h-full w-2/5 rounded-xl bg-gray-300">
+                  {bookmark.post.featuredImage && (
+                    <Image
+                      src={bookmark.post.featuredImage}
+                      alt={""}
+                      fill
+                      className="rounded-xl"
+                    />
+                  )}
+                </div>
                 <div className="flex w-full flex-col space-y-2">
                   <div className="text-lg font-semibold decoration-indigo-600 group-hover:underline">
                     {bookmark.post.title}
                   </div>
                   <div className="">{bookmark.post.description}</div>
                   <div className="flex w-full items-center space-x-4">
-                    <div className="h-8 w-8 rounded-full bg-gray-300"></div>
+                    <div className="relative h-8 w-8 rounded-full bg-gray-300">
+                      {bookmark.post.author.image && (
+                        <Avatar img={bookmark.post.author.image} />
+                      )}
+                    </div>
                     <div>{bookmark.post.author.name} &#x2022;</div>
                     <div>
                       {dayjs(bookmark.post.createdAt).format("DD/MM/YYYY")}

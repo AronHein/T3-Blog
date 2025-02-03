@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import type { RouterOutputs } from "../../utils/trpc";
 import { trpc } from "../../utils/trpc";
+import Avatar from "../Avatar";
 
 type PostProps = RouterOutputs["post"]["getPosts"][number];
 
@@ -33,14 +34,7 @@ const Post = ({ ...post }: PostProps) => {
     >
       <div className="flex w-full items-center space-x-2">
         <div className="relative h-10 w-10 rounded-full bg-gray-300">
-          {post.author.image && (
-            <Image
-              src={post.author.image}
-              fill
-              className="rounded-full"
-              alt={""}
-            />
-          )}
+          {post.author.image && <Avatar img={post.author.image} />}
         </div>
         <div>
           <p className="font-semibold">
@@ -60,7 +54,16 @@ const Post = ({ ...post }: PostProps) => {
           </p>
         </div>
         <div className="col-span-4">
-          <div className="h-full w-full transform rounded-xl bg-gray-200 transition duration-300 hover:scale-105 hover:shadow-xl"></div>
+          <div className="relative aspect-[16/9] h-full w-full  transform rounded-xl bg-gray-200 transition duration-300 hover:scale-105 hover:shadow-xl">
+            {post.featuredImage && (
+              <Image
+                src={post.featuredImage}
+                alt={""}
+                fill
+                className="rounded-xl"
+              />
+            )}
+          </div>
         </div>
       </Link>
       <div>
