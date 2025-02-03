@@ -120,7 +120,7 @@ model User {
   comments      Comment[]
   likes         Like[]
   bookmarks     Bookmark[]
-  username      String?    @unique
+  username      String     @unique
   createdAt     DateTime   @default(now())
 }
 

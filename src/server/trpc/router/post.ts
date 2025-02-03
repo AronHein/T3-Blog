@@ -55,7 +55,8 @@ export const postRouter = router({
                 author: {
                     select: {
                         name: true,
-                        image: true
+                        image: true,
+                        username: true
                     }
                 },
                 bookmarks: session?.user?.id ?{

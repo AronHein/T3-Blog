@@ -30,21 +30,29 @@ const Post = ({ ...post }: PostProps) => {
   return (
     <div
       key={post.id}
-      className="group flex flex-col space-y-4 border-b border-gray-300 pb-8 last:border-none"
+      className="mt-6 flex flex-col space-y-4 border-b border-gray-300 pb-8 first:mt-0 last:border-none"
     >
-      <div className="flex w-full items-center space-x-2">
+      <Link
+        href={`/user/${post.author.username}`}
+        className="group flex w-full cursor-pointer items-center space-x-2 "
+      >
         <div className="relative h-10 w-10 rounded-full bg-gray-300">
           {post.author.image && <Avatar img={post.author.image} />}
         </div>
         <div>
           <p className="font-semibold">
-            {post.author.name} &#x2022;{" "}
-            {dayjs(post.createdAt).format("DD/MM/YYYY")}
+            <span className="decoration-indigo-600 group-hover:underline">
+              {post.author.name}
+            </span>{" "}
+            &#x2022; {dayjs(post.createdAt).format("DD/MM/YYYY")}
           </p>
           <p className="text-sm">Some bio text</p>
         </div>
-      </div>
-      <Link href={`/${post.slug}`} className="grid w-full grid-cols-12 gap-4">
+      </Link>
+      <Link
+        href={`/${post.slug}`}
+        className="group grid w-full grid-cols-12 gap-4"
+      >
         <div className="col-span-8 flex flex-col space-y-4">
           <p className="text-2xl font-bold text-gray-800 decoration-indigo-600 group-hover:underline">
             {post.title}
