@@ -16,15 +16,15 @@ const Header = () => {
       <div className="text-2xl text-gray-600">
         <VscThreeBars />
       </div>
-      <Link href={"/"} className="select-none text-xl font-thin">
+      <Link href={"/"} className="select-none pl-24 text-xl font-thin">
         Blog
       </Link>
       {status === "authenticated" ? (
         <div className="flex items-center space-x-4">
           <div>
-            <GoBell className="text-2xl text-gray-600" />
+            <GoBell className="text-3xl text-gray-600" />
           </div>
-          <div className="relative h-7 w-7 rounded-full bg-gray-600">
+          <div className="relative h-8 w-8 rounded-full bg-gray-600">
             {data.user?.image && <Avatar img={data.user?.image} />}
           </div>
           <div>

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import Post from "../../components/Post/Index";
 import { postcss } from "tailwindcss";
+import Avatar from "../../components/Avatar";
 
 const UserProfilePage = () => {
   const router = useRouter();
@@ -34,12 +35,7 @@ const UserProfilePage = () => {
                 <div className="absolute -bottom-10 left-12">
                   <div className="relative h-24 w-24 rounded-full border-2 border-white bg-white">
                     {userProfile.data?.image && (
-                      <Image
-                        src={userProfile.data?.image}
-                        alt=""
-                        fill
-                        className="rounded-full"
-                      ></Image>
+                      <Avatar img={userProfile.data.image} />
                     )}
                   </div>
                 </div>

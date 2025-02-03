@@ -110,7 +110,7 @@ const PostPage = () => {
             {post.isSuccess && post.data?.featuredImage && (
               <Image
                 src={post.data.featuredImage}
-                alt={post.data.title}
+                alt={""}
                 fill
                 className="rounded-xl"
               />

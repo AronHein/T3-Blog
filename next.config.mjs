@@ -20,6 +20,9 @@ const config = {
       "uhfiyrlkeagwxjggxljl.supabase.co",
       "cloudflare-ipfs.com",
       "source.unsplash.com",
+      "loremflickr.com",
+      "media.istockphoto.com",
+      
     ],
   },
 };
