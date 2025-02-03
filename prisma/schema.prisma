@@ -121,6 +121,7 @@ model User {
   likes         Like[]
   bookmarks     Bookmark[]
   username      String?    @unique
+  createdAt     DateTime   @default(now())
 }
 
 model VerificationToken {

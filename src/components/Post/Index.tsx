@@ -12,7 +12,7 @@ type PostProps = RouterOutputs["post"]["getPosts"][number];
 
 const Post = ({ ...post }: PostProps) => {
   const [isBookMarked, setIsBookMarked] = useState(
-    Boolean(post.bookmarks.length)
+    Boolean(post.bookmarks?.length)
   );
 
   const bookmarkPost = trpc.post.bookmarkPost.useMutation({

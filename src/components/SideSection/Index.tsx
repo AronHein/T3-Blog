@@ -8,6 +8,8 @@ import Image from "next/image";
 function SideSection() {
   const getReadingList = trpc.post.getReadingList.useQuery();
 
+  const getUsers = trpc.userRouter.getUserSuggestions.useQuery();
+
   return (
     <aside className="sticky top-20 col-span-4 flex h-full w-full flex-col space-y-4 p-6">
       <div>
@@ -15,22 +17,28 @@ function SideSection() {
           People you might be interested in
         </h3>
         <div className="flex flex-col space-y-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="flex flex-row items-center space-x-5">
-              <div className="h-10 w-10 flex-none rounded-full bg-gray-400"></div>
-              <div>
-                <div className="text-sm font-bold text-gray-900">
-                  Firstname Lastname
+          {getUsers.isSuccess &&
+            getUsers.data.map((user) => (
+              <div
+                key={user.id}
+                className="flex flex-row items-center space-x-5"
+              >
+                <div className="relative h-10 w-10 flex-none rounded-full bg-gray-400">
+                  {user.image && <Avatar img={user.image} />}
                 </div>
-                <div className="text-xs">Some bio text about user</div>
+                <div>
+                  <div className="text-sm font-bold text-gray-900">
+                    {user.name}
+                  </div>
+                  <div className="text-xs">Some bio text about user</div>
+                </div>
+                <div>
+                  <button className="flex  items-center space-x-3 rounded border border-gray-400 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900">
+                    Follow
+                  </button>
+                </div>
               </div>
-              <div>
-                <button className="flex  items-center space-x-3 rounded border border-gray-400 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900">
-                  Follow
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
       <div className="sticky top-20">
