@@ -10,6 +10,7 @@ export const userRouter = router({
                     name: true,
                     image: true,
                     id: true,
+                    username:true,
                 },
                 orderBy: {
                     createdAt: "desc"

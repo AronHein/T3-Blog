@@ -27,9 +27,12 @@ function SideSection() {
                   {user.image && <Avatar img={user.image} />}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-gray-900">
+                  <Link
+                    href={`/user/${user.username}`}
+                    className="text-sm font-bold text-gray-900 decoration-indigo-600 hover:underline"
+                  >
                     {user.name}
-                  </div>
+                  </Link>
                   <div className="text-xs">Some bio text about user</div>
                 </div>
                 <div>
