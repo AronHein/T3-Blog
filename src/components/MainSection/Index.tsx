@@ -36,7 +36,7 @@ function MainSection() {
               placeholder="Search..."
             />
           </label>
-          <div className="flex w-full items-center justify-end space-x-4">
+          {/* <div className="flex w-full items-center justify-end space-x-4">
             <div>Topics</div>
             <div className="flex items-center space-x-2">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -45,7 +45,7 @@ function MainSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="flex w-full items-center justify-between border-b border-gray-300 pb-8">
           <div>Articles</div>

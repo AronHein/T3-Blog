@@ -75,14 +75,14 @@ const Post = ({ ...post }: PostProps) => {
         </div>
       </Link>
       <div>
-        <div className="flex w-full items-center justify-between space-x-4">
-          <div className="flex items-center space-x-2">
+        <div className="flex w-full items-center justify-end space-x-4">
+          {/* <div className="flex items-center space-x-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="rounded-full bg-gray-200/50 px-5 py-3">
                 tag {i}
               </div>
             ))}
-          </div>
+          </div> */}
           <div>
             {isBookMarked ? (
               <CiBookmarkCheck
