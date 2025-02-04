@@ -4,11 +4,21 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import Avatar from "../Avatar";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 function SideSection() {
   const getReadingList = trpc.post.getReadingList.useQuery();
-
   const getUsers = trpc.userRouter.getUserSuggestions.useQuery();
+  const session = useSession();
+  const utils = trpc.useUtils();
+
+  const followUser = trpc.userRouter.followUser.useMutation({
+    onSuccess: () => utils.userRouter.getUserSuggestions.invalidate(),
+  });
+
+  const unfollowUser = trpc.userRouter.unfollowUser.useMutation({
+    onSuccess: () => utils.userRouter.getUserSuggestions.invalidate(),
+  });
 
   return (
     <aside className="sticky top-20 col-span-4 flex h-full w-full flex-col space-y-4 p-6">
@@ -18,30 +28,47 @@ function SideSection() {
         </h3>
         <div className="flex flex-col space-y-4">
           {getUsers.isSuccess &&
-            getUsers.data.map((user) => (
-              <div
-                key={user.id}
-                className="flex flex-row items-center space-x-5"
-              >
-                <div className="relative h-10 w-10 flex-none rounded-full bg-gray-400">
-                  {user.image && <Avatar img={user.image} />}
+            getUsers.data.map((user) => {
+              const isFollowing = user.followedBy?.some(
+                (u) => u.id === session.data?.user?.id
+              );
+
+              return (
+                <div
+                  key={user.id}
+                  className="flex flex-row items-center space-x-5"
+                >
+                  <div className="relative h-10 w-10 flex-none rounded-full bg-gray-400">
+                    {user.image && <Avatar img={user.image} />}
+                  </div>
+                  <div>
+                    <Link
+                      href={`/user/${user.username}`}
+                      className="text-sm font-bold text-gray-900 decoration-indigo-600 hover:underline"
+                    >
+                      {user.name}
+                    </Link>
+                    <div className="text-xs">Some bio text about user</div>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => {
+                        if (!session.data?.user?.id) return;
+
+                        if (isFollowing) {
+                          unfollowUser.mutate({ followingUserId: user.id });
+                        } else {
+                          followUser.mutate({ followingUserId: user.id });
+                        }
+                      }}
+                      className="flex items-center space-x-3 rounded border border-gray-400 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900"
+                    >
+                      {isFollowing ? "Unfollow" : "Follow"}
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <Link
-                    href={`/user/${user.username}`}
-                    className="text-sm font-bold text-gray-900 decoration-indigo-600 hover:underline"
-                  >
-                    {user.name}
-                  </Link>
-                  <div className="text-xs">Some bio text about user</div>
-                </div>
-                <div>
-                  <button className="flex  items-center space-x-3 rounded border border-gray-400 px-4 py-2 transition hover:border-gray-900 hover:text-gray-900">
-                    Follow
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       </div>
       <div className="sticky top-20">
@@ -58,7 +85,7 @@ function SideSection() {
                   {bookmark.post.featuredImage && (
                     <Image
                       src={bookmark.post.featuredImage}
-                      alt={""}
+                      alt=""
                       fill
                       className="rounded-xl"
                     />

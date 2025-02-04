@@ -122,6 +122,8 @@ model User {
   bookmarks     Bookmark[]
   username      String     @unique
   createdAt     DateTime   @default(now())
+  followedBy    User[]     @relation("UserFollows")
+  following     User[]     @relation("UserFollows")
 }
 
 model VerificationToken {

@@ -47,7 +47,15 @@ const UserProfilePage = () => {
               </div>
               <div className="text-gray-600">@{userProfile.data?.username}</div>
               <div className="text-gray-600">
-                {userProfile.data?._count.posts ?? 0} posts
+                {userProfile.data?._count.posts ?? 0} Posts
+              </div>
+              <div className="flex">
+                <div className="pr-6 text-gray-600">
+                  {userProfile.data?._count.followedBy ?? 0} Followers
+                </div>
+                <div className="text-gray-600">
+                  {userProfile.data?._count.following ?? 0} Users Following
+                </div>
               </div>
             </div>
           </div>
